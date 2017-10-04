@@ -1,9 +1,8 @@
 package com.jpricket.uncw.data;
 
-import com.jpricket.uncw.data.model.CourseDescriptor;
+import com.jpricket.uncw.data.model.CourseSection;
 import com.jpricket.uncw.data.model.Instructor;
 import com.jpricket.uncw.data.model.Subject;
-import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -15,8 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WebReader {
-    public static List<CourseDescriptor> getCourses(String term, String subjectCode) throws IOException {
-        List<CourseDescriptor> courses = new ArrayList<CourseDescriptor>();
+    public static List<CourseSection> getCourses(String term, String subjectCode) throws IOException {
+        List<CourseSection> courses = new ArrayList<CourseSection>();
         Document doc = Jsoup.connect("https://seanet.uncw.edu/TEAL/swkfccl.P_GetCrse")
                 .requestBody("term_in=" + term +
                         "&sel_subj=dummy&sel_day=dummy&sel_schd=dummy&sel_insm=dummy&sel_camp=dummy&sel_levl=dummy&sel_sess=dummy" +
@@ -27,9 +26,9 @@ public class WebReader {
                         "&begin_ap=a&end_hh=0&end_mi=0&end_ap=a")
                 .post();
         final Elements elements = doc.select("tr:has(td[class=dddefault])");
-        CourseDescriptor lastCourse = null;
+        CourseSection lastCourse = null;
         for (final Element element : elements) {
-            final CourseDescriptor cs = new CourseDescriptor((element));
+            final CourseSection cs = new CourseSection((element));
             if (lastCourse != null && cs.getRefNumber().length() < 2) {
                 // This is not a new course but more of the schedule
                 lastCourse.getSchedule().add(cs.getSchedule().getDays().get(0), cs.getSchedule().getTimes().get(0));

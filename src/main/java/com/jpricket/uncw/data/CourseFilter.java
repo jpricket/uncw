@@ -1,6 +1,6 @@
 package com.jpricket.uncw.data;
 
-import com.jpricket.uncw.data.model.CourseDescriptor;
+import com.jpricket.uncw.data.model.CourseSection;
 import com.jpricket.uncw.data.model.CourseSchedule;
 import org.apache.commons.lang3.StringUtils;
 
@@ -8,14 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CourseFilter {
-    private final List<CourseDescriptor> courses;
+    private final List<CourseSection> courses;
     private final List<FilterExpression> filters;
 
-    public static CourseFilter create(final List<CourseDescriptor> courses) {
+    public static CourseFilter create(final List<CourseSection> courses) {
         return new CourseFilter(courses);
     }
 
-    public CourseFilter(final List<CourseDescriptor> courses) {
+    public CourseFilter(final List<CourseSection> courses) {
         this.courses = courses;
         this.filters = new ArrayList<>();
     }
@@ -30,9 +30,9 @@ public class CourseFilter {
         return this;
     }
 
-    public List<CourseDescriptor> go() {
-        final List<CourseDescriptor> filteredCourses = new ArrayList<>();
-        for(final CourseDescriptor cd: courses) {
+    public List<CourseSection> go() {
+        final List<CourseSection> filteredCourses = new ArrayList<>();
+        for(final CourseSection cd: courses) {
             boolean include = false;
             for(final FilterExpression exp: filters) {
                 if (!exp.evaluate(cd)) {
@@ -59,8 +59,8 @@ public class CourseFilter {
             this.value = value;
         }
 
-        public boolean evaluate(final CourseDescriptor courseDescriptor) {
-            final String fieldValue = getFieldValue(courseDescriptor, field);
+        public boolean evaluate(final CourseSection courseSection) {
+            final String fieldValue = getFieldValue(courseSection, field);
             switch (operator.toLowerCase()) {
                 case "=": return StringUtils.equalsIgnoreCase(fieldValue, value);
                 case "<": return StringUtils.compareIgnoreCase(fieldValue, value) < 0;
@@ -75,33 +75,33 @@ public class CourseFilter {
             return false;
         }
 
-        private String getFieldValue(final CourseDescriptor courseDescriptor, final String field) {
+        private String getFieldValue(final CourseSection courseSection, final String field) {
             switch(field.toLowerCase()) {
-                case "name": return courseDescriptor.getName();
-                case "attribute": return courseDescriptor.getAttribute();
-                case "campus": return courseDescriptor.getCampus();
-                case "course": return courseDescriptor.getCourse();
-                case "credithours": return courseDescriptor.getCreditHours();
-                case "dates": return courseDescriptor.getDates();
-                case "instructor": return courseDescriptor.getInstructor();
-                case "location": return courseDescriptor.getLocation();
-                case "refnumber": return courseDescriptor.getRefNumber();
-                case "reservedsectionremaining": return courseDescriptor.getReservedSectionRemaining();
-                case "schedule": return courseDescriptor.getSchedule().toString();
-                case "schedule.days": return StringUtils.join(courseDescriptor.getSchedule().getDayNames(),",");
+                case "name": return courseSection.getName();
+                case "attribute": return courseSection.getAttribute();
+                case "campus": return courseSection.getCampus();
+                case "course": return courseSection.getCourse();
+                case "credithours": return courseSection.getCreditHours();
+                case "dates": return courseSection.getDates();
+                case "instructor": return courseSection.getInstructor();
+                case "location": return courseSection.getLocation();
+                case "refnumber": return courseSection.getRefNumber();
+                case "reservedsectionremaining": return courseSection.getReservedSectionRemaining();
+                case "schedule": return courseSection.getSchedule().toString();
+                case "schedule.days": return StringUtils.join(courseSection.getSchedule().getDayNames(),",");
                 case "schedule.starttime": {
-                    CourseSchedule.ClassTime time = courseDescriptor.getSchedule().getStartTime();
+                    CourseSchedule.ClassTime time = courseSection.getSchedule().getStartTime();
                     String comparableTime = String.format("%02d%02d", time.Hour, time.Minute);
                     return comparableTime;
                 }
-                case "seatsremaining": return courseDescriptor.getSeatsRemaining();
-                case "section": return courseDescriptor.getSection();
-                case "session": return courseDescriptor.getSession();
-                case "subject": return courseDescriptor.getSubject();
-                case "title": return courseDescriptor.getTitle();
-                case "waitlistactual": return courseDescriptor.getWaitListActual();
-                case "waitlistcapacity": return courseDescriptor.getWaitListCapacity();
-                case "waitlistremaining": return courseDescriptor.getWaitListRemaining();
+                case "seatsremaining": return courseSection.getSeatsRemaining();
+                case "section": return courseSection.getSection();
+                case "session": return courseSection.getSession();
+                case "subject": return courseSection.getSubject();
+                case "title": return courseSection.getTitle();
+                case "waitlistactual": return courseSection.getWaitListActual();
+                case "waitlistcapacity": return courseSection.getWaitListCapacity();
+                case "waitlistremaining": return courseSection.getWaitListRemaining();
             }
             return "";
         }

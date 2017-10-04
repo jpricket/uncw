@@ -1,7 +1,7 @@
 package com.jpricket.uncw.data;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jpricket.uncw.data.model.CourseDescriptor;
+import com.jpricket.uncw.data.model.CourseSection;
 import com.jpricket.uncw.data.model.Instructor;
 import com.jpricket.uncw.data.model.StudentProfile;
 import org.apache.commons.io.FileUtils;
@@ -21,7 +21,7 @@ public class Cache {
     private final String cacheFolder;
     private final String courseFolder;
 
-    private List<CourseDescriptor> courses;
+    private List<CourseSection> courses;
     private List<Instructor> instructors;
     private List<StudentProfile> students;
 
@@ -59,7 +59,7 @@ public class Cache {
         return students != null && students.size() > 0;
     }
 
-    public List<CourseDescriptor> getCourses() {
+    public List<CourseSection> getCourses() {
         return courses;
     }
 
@@ -71,7 +71,7 @@ public class Cache {
         return students;
     }
 
-    public void initialize(List<CourseDescriptor> courses, List<Instructor> instructors, List<StudentProfile> students) {
+    public void initialize(List<CourseSection> courses, List<Instructor> instructors, List<StudentProfile> students) {
         if (courses != null) {
             this.courses = courses;
         }
@@ -93,8 +93,8 @@ public class Cache {
         FileUtils.cleanDirectory(new File(cacheFolder));
     }
 
-    private List<CourseDescriptor> readCourses() throws IOException {
-        final List<CourseDescriptor> courses = new ArrayList<CourseDescriptor>();
+    private List<CourseSection> readCourses() throws IOException {
+        final List<CourseSection> courses = new ArrayList<CourseSection>();
         final File folder = new File(courseFolder);
         if (folder.exists()) {
             for(final File f: folder.listFiles()) {
@@ -104,10 +104,10 @@ public class Cache {
         return courses;
     }
 
-    private CourseDescriptor[] readCourses(final String filename) throws IOException {
+    private CourseSection[] readCourses(final String filename) throws IOException {
         final List<String> lines = Files.readAllLines(Paths.get(courseFolder, filename));
         final ObjectMapper mapper = new ObjectMapper();
-        CourseDescriptor[] courses = mapper.readValue("[" + StringUtils.join(lines, ",\n") + "]", CourseDescriptor[].class);
+        CourseSection[] courses = mapper.readValue("[" + StringUtils.join(lines, ",\n") + "]", CourseSection[].class);
         return courses;
     }
 
@@ -123,15 +123,15 @@ public class Cache {
         return instructors;
     }
 
-    private void writeCourses(final List<CourseDescriptor> courses) throws IOException {
+    private void writeCourses(final List<CourseSection> courses) throws IOException {
         if (courses != null) {
-            for (final CourseDescriptor cd : courses) {
+            for (final CourseSection cd : courses) {
                 writeCourse(cd);
             }
         }
     }
 
-    private void writeCourse(final CourseDescriptor course) throws IOException {
+    private void writeCourse(final CourseSection course) throws IOException {
         final String path = courseFolder + "\\" + course.getSubject() + course.getCourse() + ".json";
         final FileWriter writer = new FileWriter(path, true);
         try {

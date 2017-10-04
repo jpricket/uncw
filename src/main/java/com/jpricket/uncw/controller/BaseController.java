@@ -1,7 +1,9 @@
 package com.jpricket.uncw.controller;
 
 import com.jpricket.uncw.data.Cache;
+import com.jpricket.uncw.data.Store;
 import com.jpricket.uncw.data.model.StudentProfile;
+import com.jpricket.uncw.view.AdminView;
 import com.jpricket.uncw.view.ScheduleView;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 
@@ -32,16 +35,4 @@ public class BaseController {
                 "</body>\n" +
                 "</html>";
     }
-
-    @RequestMapping(value = "/student/{id}/schedule", method = RequestMethod.GET)
-    @ResponseBody
-    public String welcomeName(@PathVariable String id, ModelMap model) throws IOException {
-        final String cacheLocation = "c:\\users\\jpricket\\desktop\\classCache3";
-        final Cache cache = new Cache(cacheLocation);
-        cache.load();
-        final StudentProfile student = cache.getStudents().get(0);
-        final ScheduleView view = new ScheduleView(cache, student);
-        return view.getHtml();
-    }
-
 }

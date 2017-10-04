@@ -1,20 +1,14 @@
 package com.jpricket.uncw.view;
 
-import com.jpricket.uncw.data.Cache;
 import com.jpricket.uncw.data.CourseFilter;
-import com.jpricket.uncw.data.model.CourseDescriptor;
+import com.jpricket.uncw.data.Store;
+import com.jpricket.uncw.data.model.CourseSection;
 import com.jpricket.uncw.data.model.CourseSchedule;
 import com.jpricket.uncw.data.model.StudentProfile;
 import org.apache.commons.lang3.StringUtils;
 
 import java.awt.*;
-import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ScheduleView {
@@ -28,29 +22,30 @@ public class ScheduleView {
     public ScheduleView() {
     }
 
-    public ScheduleView(final Cache cache, final StudentProfile student) {
-        List<CourseDescriptor> filteredCourses =
-                CourseFilter.create(cache.getCourses())
+    public ScheduleView(int studentId) {
+        final StudentProfile student = Store.getInstance().getStudent(studentId);
+        List<CourseSection> filteredCourses =
+                CourseFilter.create(Store.getInstance().getCourses())
                     .in(student.getRegisteredClasses())
                     .go();
-        for(final CourseDescriptor course: filteredCourses) {
+        for(final CourseSection course: filteredCourses) {
             addClass(course, true);
         }
         // Add optional classes
         String classes = String.join("; ", student.getRequiredClasses()) + "; " +
                 String.join("; ", student.getOptionalClasses());
-        addClasses(CourseFilter.create(cache.getCourses())
+        addClasses(CourseFilter.create(Store.getInstance().getCourses())
                 .where("name", "in", classes)
                 .go());
     }
 
-    public void addClasses(final List<CourseDescriptor> courses) {
-        for(CourseDescriptor course: courses) {
+    public void addClasses(final List<CourseSection> courses) {
+        for(CourseSection course: courses) {
             addClass(course, false);
         }
     }
 
-    public void addClass(final CourseDescriptor course, final boolean scheduled) {
+    public void addClass(final CourseSection course, final boolean scheduled) {
         Color c = colors[nextColor++];
         if (nextColor >= colors.length) {
             nextColor = 0;
@@ -263,7 +258,7 @@ public class ScheduleView {
         return String.format("%02d:%02d", hour, min);
     }
 
-    private void addBlock(final CourseSchedule.ClassTime time, final CourseDescriptor course, final Color color,
+    private void addBlock(final CourseSchedule.ClassTime time, final CourseSection course, final Color color,
                           final String blockId, final boolean scheduled) {
         final int dayIndex = getDayIndex(time.Day);
         final int timeIndex = getTimeIndex(time.Hour, time.Minute);

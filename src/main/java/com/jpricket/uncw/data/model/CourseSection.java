@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class CourseDescriptor {
+public class CourseSection {
     private String refNumber;
     private String subject;
     private String course;
@@ -25,10 +25,10 @@ public class CourseDescriptor {
 
     private CourseSchedule schedule;
 
-    public CourseDescriptor() {
+    public CourseSection() {
     }
 
-    public CourseDescriptor(final Element element) {
+    public CourseSection(final Element element) {
         int index = 0;
         Elements cols = element.select("td");
         refNumber = cols.get(index++).text();
