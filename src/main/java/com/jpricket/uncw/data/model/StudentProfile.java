@@ -4,19 +4,22 @@ public class StudentProfile {
     private String id;
     private String name;
     private String year;
+    private String[] courseCredits;
     private String[] registeredClasses;
-    private String[] requiredClasses;
+    private String[] majors;
     private String[] optionalClasses;
 
     public StudentProfile(final String id, final String name, final String year,
+                          final String[] courseCredits,
                           final String[] registeredClasses,
-                          final String[] requiredClasses,
+                          final String[] majors,
                           final String[] optionalClasses) {
         this.id = id;
         this.name = name;
         this.year = year;
+        this.courseCredits = courseCredits;
         this.registeredClasses = registeredClasses;
-        this.requiredClasses = requiredClasses;
+        this.majors = majors;
         this.optionalClasses = optionalClasses;
     }
 
@@ -32,6 +35,10 @@ public class StudentProfile {
         return year;
     }
 
+    public String[] getCourseCredits() {
+        return courseCredits;
+    }
+
     public String[] getOptionalClasses() {
         return optionalClasses;
     }
@@ -40,7 +47,7 @@ public class StudentProfile {
         return registeredClasses;
     }
 
-    public String[] getRequiredClasses() {
-        return requiredClasses;
+    public String[] getMajors() {
+        return majors;
     }
 }

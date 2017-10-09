@@ -1,20 +1,11 @@
 package com.jpricket.uncw.controller;
 
-import com.jpricket.uncw.data.Cache;
-import com.jpricket.uncw.data.Store;
-import com.jpricket.uncw.data.model.StudentProfile;
-import com.jpricket.uncw.view.AdminView;
-import com.jpricket.uncw.view.ScheduleView;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
-
-import java.io.IOException;
 
 @Controller
 public class BaseController {

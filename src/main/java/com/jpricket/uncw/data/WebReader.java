@@ -17,6 +17,7 @@ public class WebReader {
     public static List<CourseSection> getCourses(String term, String subjectCode) throws IOException {
         List<CourseSection> courses = new ArrayList<CourseSection>();
         Document doc = Jsoup.connect("https://seanet.uncw.edu/TEAL/swkfccl.P_GetCrse")
+                .header("Referer","https://seanet.uncw.edu/TEAL/swkfccl.p_sel_term_date")
                 .requestBody("term_in=" + term +
                         "&sel_subj=dummy&sel_day=dummy&sel_schd=dummy&sel_insm=dummy&sel_camp=dummy&sel_levl=dummy&sel_sess=dummy" +
                         "&sel_instr=dummy&sel_ptrm=dummy&sel_attr=dummy" +
@@ -45,6 +46,7 @@ public class WebReader {
     public static List<Subject> getSubjects(String term) throws IOException {
         final List<Subject> subjects = new ArrayList<Subject>();
         final Document doc = Jsoup.connect("https://seanet.uncw.edu/TEAL/swkfccl.p_sel_term_date")
+                .header("Referer", "https://seanet.uncw.edu/TEAL/twbkwbis.P_GenMenu?name=homepage")
                 .requestBody("call_proc_in=swkfccl.p_sel_crse_search&term_in=" + term)
                 .post();
         final Elements elements = doc.select("SELECT[NAME=sel_subj] > OPTION");

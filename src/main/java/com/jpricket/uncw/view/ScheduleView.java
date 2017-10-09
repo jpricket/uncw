@@ -2,6 +2,7 @@ package com.jpricket.uncw.view;
 
 import com.jpricket.uncw.data.CourseFilter;
 import com.jpricket.uncw.data.Store;
+import com.jpricket.uncw.data.StudentHelper;
 import com.jpricket.uncw.data.model.CourseSection;
 import com.jpricket.uncw.data.model.CourseSchedule;
 import com.jpricket.uncw.data.model.StudentProfile;
@@ -24,16 +25,16 @@ public class ScheduleView {
 
     public ScheduleView(int studentId) {
         final StudentProfile student = Store.getInstance().getStudent(studentId);
-        List<CourseSection> filteredCourses =
-                CourseFilter.create(Store.getInstance().getCourses())
-                    .in(student.getRegisteredClasses())
-                    .go();
-        for(final CourseSection course: filteredCourses) {
-            addClass(course, true);
-        }
+//        List<CourseSection> filteredCourses =
+//                CourseFilter.create(Store.getInstance().getCourses())
+//                    .in(student.getRegisteredClasses())
+//                    .go();
+//        for(final CourseSection course: filteredCourses) {
+//            addClass(course, true);
+//        }
         // Add optional classes
-        String classes = String.join("; ", student.getRequiredClasses()) + "; " +
-                String.join("; ", student.getOptionalClasses());
+
+        String classes = String.join("; ", StudentHelper.getPossibleCourses(student));
         addClasses(CourseFilter.create(Store.getInstance().getCourses())
                 .where("name", "in", classes)
                 .go());

@@ -1,9 +1,7 @@
 package com.jpricket.uncw.data;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jpricket.uncw.data.model.CourseSection;
-import com.jpricket.uncw.data.model.Instructor;
-import com.jpricket.uncw.data.model.StudentProfile;
+import com.jpricket.uncw.data.model.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -24,6 +22,8 @@ public class Cache {
     private List<CourseSection> courses;
     private List<Instructor> instructors;
     private List<StudentProfile> students;
+    private List<CourseDependency> dependencies;
+    private List<Major> majors;
 
     public Cache(final String cacheFolder) throws IOException {
         this.cacheFolder = cacheFolder;
@@ -37,14 +37,50 @@ public class Cache {
         courses = readCourses();
         //TODO students = readStudentProfiles();
         students = new ArrayList<>();
-        students.add(new StudentProfile("10001", "Matthew Prickett", "first", 
-                new String[0],
-                new String[] { "csc231", "csc242", "spn303", "chm101", "chml101",
-                        "phy201", "phyl201", "gly101", "glyl100"},
-                new String[] {"art101", "art105", "hst101", "crw201", "eng233", "fst110",
+        students.add(new StudentProfile("10001", "Matthew Prickett", "first",
+                new String[] { "csc131", "mat161", "mat162", "eng101", "eng201", "hst105", "hst106" },
+                new String[] { "csc133", "stt215" },
+                new String[] { "bscs"},
+                new String[] { "spn303", "hon120", "hon121",
+                        "ant207", "art101", "art105", "hst101", "crw201", "eng233", "fst110",
                         "thr130", "thr230", "ebd280", "pls101",
-                        "gly120", "glyl120", "mat261", "mat275", "mat335" }
+                        "gly120", "glyl120", "mat275", "mat335", "mus110", "mus111", "musl111" }
                 ));
+        //TODO load course relationships from file
+        dependencies = new ArrayList<>();
+        dependencies.add(new CourseDependency("csc231", "csc131", CourseDependency.Relationship.Prerequisite));
+        dependencies.add(new CourseDependency("csc231", "csc133", CourseDependency.Relationship.Corequisite));
+        dependencies.add(new CourseDependency("csc242", "csc131", CourseDependency.Relationship.Prerequisite));
+        dependencies.add(new CourseDependency("csc242", "csc133", CourseDependency.Relationship.Prerequisite));
+        dependencies.add(new CourseDependency("csc331", "csc231", CourseDependency.Relationship.Prerequisite));
+        dependencies.add(new CourseDependency("csc340", "csc231", CourseDependency.Relationship.Prerequisite));
+        dependencies.add(new CourseDependency("csc340", "mat162", CourseDependency.Relationship.Prerequisite));
+        dependencies.add(new CourseDependency("csc342", "csc231", CourseDependency.Relationship.Prerequisite));
+        dependencies.add(new CourseDependency("csc342", "csc242", CourseDependency.Relationship.Prerequisite));
+        dependencies.add(new CourseDependency("csc360", "csc231", CourseDependency.Relationship.Prerequisite));
+        dependencies.add(new CourseDependency("csc360", "csc242", CourseDependency.Relationship.Prerequisite));
+        dependencies.add(new CourseDependency("csc380", "csc133", CourseDependency.Relationship.Prerequisite));
+        dependencies.add(new CourseDependency("csc380", "csc231", CourseDependency.Relationship.Prerequisite));
+        dependencies.add(new CourseDependency("csc380", "mat161", CourseDependency.Relationship.Prerequisite));
+        dependencies.add(new CourseDependency("csc385", "eng101", CourseDependency.Relationship.Prerequisite));
+        dependencies.add(new CourseDependency("csc434", "csc331", CourseDependency.Relationship.Prerequisite));
+        dependencies.add(new CourseDependency("csc434", "csc360", CourseDependency.Relationship.Prerequisite));
+        dependencies.add(new CourseDependency("csc450", "csc331", CourseDependency.Relationship.Prerequisite));
+        dependencies.add(new CourseDependency("csc455", "csc331", CourseDependency.Relationship.Prerequisite));
+        dependencies.add(new CourseDependency("mat162", "mat161", CourseDependency.Relationship.Prerequisite));
+
+        //TODO load majors from files
+        majors = new ArrayList<>();
+        final List<Major.CourseGroup> groups = new ArrayList<>();
+        groups.add(new Major.CourseGroup("Core Courses", "", 0,
+                "csc131", "csc133", "csc231", "csc242", "csc331",
+                "csc340", "csc342", "csc360", "csc380", "csc385",
+                "csc434", "csc450", "csc455", "mat161", "mat162",
+                "stt215"));
+        groups.add(new Major.CourseGroup("Optional Courses", "Choose nine additional hours of 300-400 level CSC courses approved by an advisor", 3,
+                "csc320", "csc344", "csc370", "csc475"));
+        majors.add(new Major("bscs", "B.S. Computer Science", "Arts & Sciences",
+                groups));
     }
 
     public boolean hasCourses() {
@@ -71,6 +107,14 @@ public class Cache {
         return students;
     }
 
+    public List<CourseDependency> getDependencies() {
+        return dependencies;
+    }
+
+    public List<Major> getMajors() {
+        return majors;
+    }
+
     public void initialize(List<CourseSection> courses, List<Instructor> instructors, List<StudentProfile> students) {
         if (courses != null) {
             this.courses = courses;
@@ -91,6 +135,8 @@ public class Cache {
 
     public void clearCache() throws IOException {
         FileUtils.cleanDirectory(new File(cacheFolder));
+        // put back the courses folder
+        Files.createDirectories(Paths.get(courseFolder));
     }
 
     private List<CourseSection> readCourses() throws IOException {

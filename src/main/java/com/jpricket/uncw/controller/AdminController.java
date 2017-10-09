@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
+
 @Controller
 public class AdminController {
 
@@ -26,7 +28,15 @@ public class AdminController {
 
     @RequestMapping(value = "/admin/load", method = RequestMethod.GET)
     public ModelAndView adminLoad(ModelMap model) {
-        Store.getInstance().getCourses();
+        Store.getInstance().ensureLoaded();
         return new ModelAndView("redirect:/admin");
     }
+
+    @RequestMapping(value = "/admin/refresh", method = RequestMethod.GET)
+    public ModelAndView adminRefresh(ModelMap model) throws IOException {
+        final String term = "201820"; // Year is plus one if fall term; 10 == fall, 20 == spring, 60 == summer
+        Store.getInstance().refreshCache(term);
+        return new ModelAndView("redirect:/admin");
+    }
+
 }
